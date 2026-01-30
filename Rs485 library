@@ -1,89 +1,51 @@
 import struct
 
-class ProjectaRS485:
-    """
-    A library for decoding Projecta PM RS485 communication.
-    Supports Power, Tanks, DCDC, and Lighting control.
-    """
-
+class ProjectaMasterLibrary:
     def __init__(self):
-        # Current system state (Real-time telemetry)
-        self.telemetry = {
-            'battery_voltage': 0.0,    #
-            'battery_current': 0.0,    #
-            'battery_soc': 0,          #
-            'solar_voltage': 0.0,      #
-            'solar_current': 0.0,      #
-            'output_voltage': 0.0,     #
-            'output_current': 0.0,     #
-            'tank_1_pc': 0,            #
-            'tank_2_pc': 0,            #
-            'dcdc_input_v': 0.0,       #
-            'dcdc_current': 0.0,       #
-        }
-        
-        # Last command observed (Lighting/Switches)
-        self.last_command = {
-            'address': None,
-            'action': None,  # 'ON', 'OFF', or value
-            'raw_reg': 0
+        self.state = {
+            # Telemetry
+            'battery_v': 0.0, 'battery_a': 0.0, 'soc': 0,
+            'temp_batt': 0.0, 'temp_ext': 0.0,
+            'tank_1': 0, 'tank_2': 0,
+            'solar_v': 0.0, 'solar_a': 0.0,
+
+            # Switch States (Zeta Module)
+            'master_switch': False,   # Output 2-14
+            'hot_water': False,       # Output 10
+            'water_pump': False,      # Output 11
+            'slide_out': False,       # Output 13
+            'awning': False           # Output 12
         }
 
-    def parse(self, packet_hex):
-        """
-        Main parsing method. Handles variable length Projecta frames.
-        """
-        packet = bytes.fromhex(packet_hex.replace(" ", ""))
-        length = len(packet)
+    def process(self, packet_hex):
+        p = bytes.fromhex(packet_hex.replace(" ", ""))
+        length = len(p)
 
-        # 1. Main System Heartbeat
-        if length == 94:
-            self._parse_94_byte_snapshot(packet)
-        
-        # 2. Main System Heartbeat with 8-byte display prefix
-        elif length == 102:
-            self._parse_94_byte_snapshot(packet[8:])
+        # 1. Full Telemetry Snapshot (94 bytes)
+        if length == 94 or length == 102:
+            d = p[8:] if length == 102 else p
+            self.state['battery_v'] = self._i16(d, 20) / 100.0
+            self.state['battery_a'] = self._i16(d, 22) / 100.0
+            self.state['soc']       = d[25]
+            self.state['temp_batt'] = self._i16(d, 28) / 10.0
+            self.state['temp_ext']  = self._i16(d, 50) / 10.0
+            self.state['tank_1']    = d[41]
+            self.state['tank_2']    = d[43]
+            self.state['solar_v']   = self._i16(d, 4) / 100.0
+            self.state['solar_a']   = self._i16(d, 6) / 100.0
 
-        # 3. DCDC / Alternator Charging
-        elif length == 44:
-            self._parse_44_byte_dcdc(packet)
-
-        # 4. Lighting & Switch Commands (10-byte repeating packet)
+        # 2. Switching Logic (20 bytes)
         elif length == 20:
-            # These packets usually repeat the same 10 bytes twice
-            self._parse_lighting_cmd(packet[:10])
+            reg = int.from_bytes(p[2:4], 'big')
+            val = int.from_bytes(p[6:8], 'big')
+            status = (val > 0)
 
-        return self.telemetry, self.last_command
-
-    def _parse_94_byte_snapshot(self, p):
-        """Main System Heartbeat."""
-        self.telemetry['solar_voltage'] = self._i16(p, 4) / 100.0
-        self.telemetry['solar_current'] = self._i16(p, 6) / 100.0
-        self.telemetry['output_voltage'] = self._i16(p, 16) / 100.0
-        self.telemetry['output_current'] = self._i16(p, 18) / 100.0
-        self.telemetry['battery_voltage'] = self._i16(p, 20) / 100.0
-        self.telemetry['battery_current'] = self._i16(p, 22) / 100.0
-        self.telemetry['battery_soc'] = p[25]
-        self.telemetry['tank_1_pc'] = p[41]
-        self.telemetry['tank_2_pc'] = p[43]
-
-    def _parse_44_byte_dcdc(self, p):
-        """Dc-Dc Status."""
-        self.telemetry['dcdc_input_v'] = self._i16(p, 16) / 100.0
-        self.telemetry['dcdc_current'] = self._i16(p, 22) / 100.0
-
-    def _parse_lighting_cmd(self, p):
-        """Decodes switch commands (B0 10 ADDR COUNT VAL CRC)."""
-        # Example: B0 10 01 1D 00 02 00 01 ...
-        reg_addr = int.from_bytes(p[2:4], 'big')
-        value = int.from_bytes(p[6:8], 'big')
-        
-        self.last_command['address'] = hex(reg_addr)
-        self.last_command['raw_reg'] = reg_addr
-        self.last_command['action'] = 'ON' if value > 0 else 'OFF'
-        
-        # Mapping to Register Config
-        # Registers 285 (0x11D) and 286 (0x11E) are common lighting status writes.
+            # Map based on observed registers for your 5 outputs
+            if reg == 0x011D: self.state['master_switch'] = status
+            elif reg == 0x011E: self.state['water_pump'] = status
+            # Add other registers as you sniff them during physical button presses
+            
+        return self.state
 
     @staticmethod
     def _i16(p, offset):
