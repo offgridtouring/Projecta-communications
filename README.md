@@ -3,8 +3,8 @@ Reverse engerineering the rs485 and canbus protocol for projecta battery managem
 
 Display plug wiring
 Red    - 12v
-Yellow - RS485
-White  - RS485
+Yellow - RS485 B
+White  - RS485 A
 Black  - Ground
 Blue.  - Can
 Unused
