@@ -27,8 +27,10 @@ Byte  Status Parameter             Data Type Size Notes / Hypothesis
 54 - 59 🔴
 60 - 61 🟢 Pump State               UInt16 (BE)  2 bytes    Boolean     0001 = ON, 0000 = OFF
 62 - 63 🟢 Load State               UInt16 (BE)  2 bytes    Boolean     0001 = ON, 0000 = OFF
-64 - 65 🔴 State                    UInt16 (BE)  2 bytes    Boolean     0001 = ON, 0000 = OFF
-66 - 67 🔴 State                    UInt16 (BE)  2 bytes    Boolean     0001 = ON, 0000 = OFF
+64 - 65 🟢 AC Charger Voltage	      Int16 (BE)   2 bytes    ÷ 100 (V)
+66 - 67 🟢 AC Charger Current	      Int16 (BE)   2 bytes    ÷ 100 (A)   Charging (+), Discharging (-)
 68 - 69 🔴 State                    UInt16 (BE)  2 bytes    Boolean     0001 = ON, 0000 = OFF
 70 - 71 🔴 State                    UInt16 (BE)  2 bytes    Boolean     0001 = ON, 0000 = OFF
-64 - 93 🔴 
+64 - 80 🔴 
+81      🟢 Charge Flag           UInt8         1 byte      
+82 - 93 🔴
