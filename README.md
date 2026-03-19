@@ -39,4 +39,13 @@ PMCOMY Cable - RJ45 (T568B) (Sensor Plug)
 5) Red       - 7) Brown/White  - 12v 
 6) Green     - 5)	Blue/white	 - CAN H
 7) White     - 3) Green/White  - RS485 A
-8) Unused    - 1) Orange/White - (Unsure - Gnd/Dry contact - Wake up purpose) 
+8) Unused    - 1) Orange/White - (Unsure - Gnd/Dry contact - Wake up purpose)
+
+TH/.025 CONNECTOR SYSTEM
+8pin male - 1376352-1
+<img width="864" height="648" alt="1376352-1-m2" src="https://github.com/user-attachments/assets/e30d004d-9f81-4017-941b-6509f8310f8a" />
+8pin female - 1565804-2
+<img width="864" height="648" alt="1565804-2-f" src="https://github.com/user-attachments/assets/3a159a87-b8d8-46ba-8d9c-a102295d61bc" />
+
+
+
