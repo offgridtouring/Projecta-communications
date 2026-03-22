@@ -1,39 +1,66 @@
-Byte  Status Parameter             Data Type Size Notes / Hypothesis
-0 - 3   🔴 System Header / Status?                4 bytes                Often contains the device ID, operating state (e.g., Bulk, Float, Absorption), or active fault codes.
-4 - 5   🟢 Solar Input Voltage      Int16 (BE)    2 bytes    ÷ 100 (V)
-6 - 7   🟢 Solar Input Current      Int16 (BE)    2 bytes    ÷ 100 (A)
-8 - 9	  🟢 Start Input Voltage      Int16 (BE)    2 bytes	   ÷ 100 (V)	Vehicle alternator / secondary solar
-12 - 13	🟢 Output Voltage	           Int16 (BE)    2 bytes	 ÷ 100 (V)	Output going to the house system
-14 - 15	🟢 Charge Current	           Int16 (BE)    2 bytes	 ÷ 100 (A)	Current flowing to the battery
-16 - 17 🟢 DC Load Voltage          Int16 (BE)    2 bytes    ÷ 100 (V)
-18 - 19 🟢 DC Load Current          Int16 (BE)    2 bytes    ÷ 100 (A)
-20 - 21 🟢 Battery Voltage          Int16 (BE)    2 bytes    ÷ 100 (V)
-22 - 23 🟢 Battery Current          Int16 (BE)    2 bytes    ÷ 100 (A)  Charging (+), Discharging (-)
-24      🔴 Charge Status            UInt8	        ID          1=Bulk, 2=Absorb, 3=Float 4=Storage 5=Equalization
-25      🟢 Battery SOC              UInt8         1 byte      1:1 (%)   Range: 0 to 100.
-26 - 27 🔴 
-28 - 29 🟢 Battery Temp	            Int16 (BE)	  2 bytes	÷ 10 (°C)
-30 - 31 🔴  
-32 - 33 🟢 Screen/Timeout State	    UInt16 (BE)	  State ID		            Syncs with Register  
-34 - 39 🔴
-40 - 41 🟢 Ext Shunt Current       Int16 (BE)    2 bytes    ÷ 100 (A)
-42 - 43 🟢 Tank 2                  UInt16 (BE)  2 bytes     1:1 (%)     Reads 65535 (0xFFFF) if disconnected.
-44 - 45 🟢 Tank 3                  UInt16 (BE)   2 bytes    1:1 (%)     Reads 65535 (0xFFFF) if disconnected.
-46 - 47 🟢 Main State               UInt16 (BE)  2 bytes    Boolean     0001 = ON, 0000 = OFF
-48 - 49 🟢 Tank 4                  UInt16 (BE)   2 bytes    1:1 (%)     Reads 65535 (0xFFFF) if disconnected. 
-50 - 51 🟢 Outside Temp	            Int16 (BE)	  2 bytes	  ÷ 10 (°C)
-52      🟢 Pump Switch              Bitmask      1 byte     Binary      0 = Load, 1 = Pump
-53      🟢 Control Switches         Bitmask      1 byte     Binary      0 = Load, 1 = Pump, Bit 2 = Night Mode.
-54 - 56 🔴 
-57      🟢 Battery Type             Bitmask      1 byte     Binary      0 = LA, 1 = AGM, 2 = LFP, 3 = GEL
-58 - 59 🟢 Battery Capacity         UInt16BE	   2 bytes     1:1                                
-60 - 61 🟢 Pump State               UInt16 (BE)  2 bytes    Boolean     0001 = ON, 0000 = OFF
-62 - 63 🟢 Load State               UInt16 (BE)  2 bytes    Boolean     0001 = ON, 0000 = OFF
-64 - 65 🟢 AC Charger Voltage	      Int16 (BE)   2 bytes    ÷ 100 (V)
-66 - 67 🟢 AC Charger Current	      Int16 (BE)   2 bytes    ÷ 100 (A)   Charging (+), Discharging (-)
-68 - 69 🔴 State                    UInt16 (BE)  2 bytes    Boolean     0001 = ON, 0000 = OFF
-70 - 71 🔴 State                    UInt16 (BE)  2 bytes    Boolean     0001 = ON, 0000 = OFF
-64 - 80 🔴 
-81      🟢 Master Flag              UInt8         1 byte    Bits	      0x80=Shunt, 0x40=Bulk, 0x20=Float, 0x10 Start Active, 0x08 Solar Active, 0x02 Battery Charging, 0x01 Loads On
-82 - 93 🔴
-100 - 101 🟢 System Temp	            Int16 (BE)	  2 bytes	÷ 10 (°C)
+🔵 Telemetry Frame (94-Byte Broadcast)
+Byte      Status Parameter             Data Type    Size       Scale       Notes / Hypothesis
+0 - 3     🔴 System Header / Status?  Header        Hex        N/A         Always B0 03 00 58
+4 - 5     🟢 Solar Input Voltage      Int16 (BE)    2 bytes    ÷100 (V)    Input Voltage from Panels
+6 - 7     🟢 Solar Input Current      Int16 (BE)    2 bytes    ÷100 (A)    Input Current from Panels
+8 - 9	    🟢 Start Input Voltage      Int16 (BE)    2 bytes	   ÷100 (V)     Vehicle Starter Battery Voltage
+12 - 13	  🟢 Output Voltage	           Int16 (BE)    2 bytes	 ÷100 (V)     House Battery Bank Voltage
+14 - 15	  🟢 Charge Current	           Int16 (BE)    2 bytes	 ÷100 (A)     
+16 - 17   🟢 DC Load Voltage          Int16 (BE)    2 bytes    ÷100 (V)
+18 - 19   🟢 DC Load Current          Int16 (BE)    2 bytes    ÷100 (A)
+20 - 21   🟢 Battery Voltage          Int16 (BE)    2 bytes    ÷100 (V)    House Battery Bank Voltage
+22 - 23   🟢 Battery Current          Int16 (BE)    2 bytes    ÷100 (A)    (+) Charging / (-) Discharging
+24        🔴 Charge Status            UInt8	        ID                     1=Bulk, 2=Absorb, 3=Float 4=Storage 5=Equalization
+25        🟢 Battery SOC              UInt8         1 byte      1:1 (%)    State of Charge (%)
+26 - 27   🔴 
+28 - 29   🟢 Battery Temp	            Int16 (BE)	  2 bytes	    ÷ 10 (°C)  NTC 1 Sensor (°C)
+30 - 31   🟢 Outside Temp	            Int16 (BE)	  2 bytes	    ÷ 10 (°C)  NTC 1 Sensor (°C)
+32 - 33   🟢 Internal Temp	          Int16 (BE)	  2 bytes	    ÷ 10 (°C)  NTC 1 Sensor (°C)
+34 - 35   🔴
+36        🔴 Source                  	UInt8         1 byte                 04	= AC Input 
+37        🔴
+38 - 39   🔴
+40 - 41   🟢 Ext Shunt Current       Int16 (BE)    2 bytes     ÷ 100 (A)
+42 - 43   🟢 Tank 2                  UInt16 (BE)   2 bytes     1:1 (%)     Reads 65535 (0xFFFF) if disconnected.
+44 - 45   🟢 Tank 3                  UInt16 (BE)   2 bytes     1:1 (%)     Reads 65535 (0xFFFF) if disconnected.
+46 - 47   🟢 Main State              UInt16 (BE)  2 bytes     Boolean     0001 = ON, 0000 = OFF
+48 - 49   🟢 Tank 4                  UInt16 (BE)   2 bytes     1:1 (%)     Reads 65535 (0xFFFF) if disconnected. 
+52 - 53   🟢 AC Charger Current      Int16BE       2 bytes     ÷ 100
+52 - 53   🟢 AC Charger Current      Int16BE       2 bytes     ÷ 100
+54 - 56   🔴 AC Input Watts          	Int16BE       2 bytes                Calculated AC Power [TBC]
+57        🟢 Battery Type             Bitmask      1 byte      Binary      0 = LA, 1 = AGM, 2 = LFP, 3 = GEL
+58 - 59   🟢 Battery Capacity         UInt16BE	    2 bytes     1:1                                
+60 - 61   🟢 Pump State               UInt16BE     2 bytes     Boolean     0001 = ON, 0000 = OFF
+62 - 63   🟢 Load State               UInt16BE     2 bytes     Boolean     0001 = ON, 0000 = OFF
+64 - 65   🟢 AC Charger Voltage	      Int16BE       2 bytes    ÷ 100 (V)
+66 - 67   🟢 AC Charger Current	      Int16BE       2 bytes    ÷ 100 (A)   Charging (+), Discharging (-)
+68 - 69   🔴 Fault Code               UInt16       2 bytes                 0000 = OK, Else = Error Code [TBC]
+70 - 71   🟢 LVD Setting              UInt16BE     2 bytes     ÷ 10        Low Voltage Disconnect (11.2V = 0x0070)
+72 - 73   🔴
+74 - 75   🔴
+76 - 77   🔴
+78 - 79   🔴
+80        🔴
+81        🟢 Flag                     UInt8        1 byte     Bits	       (See Below)
+82 - 83   🟢 Charge Limit             UInt16BE     2 bytes     ÷ 10        Max Charge Current (30A = 0x012C)
+84 - 85   🔴
+86 - 87   🔴
+88 - 89   🔴
+90 - 91   🔴 Aux Sensor	               Int16 (BE)   2 bytes	   ÷100 (V)     Aux Voltage
+92 - 93   🟢 Checksum (CRC)	                        2 bytes	   CRC16	      Modbus RTU Standard
+
+🚩 Flag Byte Decoder (Byte 81)
+Bit      Hex      Name      Function
+7        0x80     SHUNT     1 = External Shunt Active (Tank 1 Disabled)
+6        0x40     BULK      1 = Bulk/Absorb Charging Stage
+5        0x20     FLOAT     1 = Float/Maintenance Charging Stage
+3        0x08     INPUT     1 = Active Charging Source Detected (AC/Solar)
+1        0x02     CHG       1 = Current flowing into Battery
+0        0x01     LOAD      1 = Main Load Switch is ON
+
+🧩 System Settings String (325-Byte Frame)
+Byte Range   Parameter     Type       Example
+115-121      Model Name    String     SMP1235
+126-135      FW Version    String     20.29.0042
+232-233      LVD Value     UInt16BE   0x0070 (11.2V)
+240          Chg Limit     UInt8      0x1E (30A)
