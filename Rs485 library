@@ -17,9 +17,9 @@ Byte      Status Parameter             Data Type    Size       Scale       Notes
 30 - 31   🟢 Outside Temp	            Int16 (BE)	  2 bytes	    ÷ 10 (°C)  NTC 1 Sensor (°C)
 32 - 33   🟢 Internal Temp	          Int16 (BE)	  2 bytes	    ÷ 10 (°C)  NTC 1 Sensor (°C)
 34 - 35   🔴
-36        🔴 Source                  	UInt8         1 byte                 04	= AC Input 
+36        🟢 Source                  	UInt8         1 byte                 00= No External Charging, 01= Solar Input, 02= Vehicle Input, 04	= AC Input
 37        🔴
-38 - 39   🔴
+38 - 39   🔴 VSR                                                          00 20 = Active
 40 - 41   🟢 Ext Shunt Current       Int16 (BE)    2 bytes     ÷ 100 (A)
 42 - 43   🟢 Tank 2                  UInt16 (BE)   2 bytes     1:1 (%)     Reads 65535 (0xFFFF) if disconnected.
 44 - 45   🟢 Tank 3                  UInt16 (BE)   2 bytes     1:1 (%)     Reads 65535 (0xFFFF) if disconnected.
@@ -30,8 +30,8 @@ Byte      Status Parameter             Data Type    Size       Scale       Notes
 54 - 56   🔴 AC Input Watts          	Int16BE       2 bytes                Calculated AC Power [TBC]
 57        🟢 Battery Type             Bitmask      1 byte      Binary      0 = LA, 1 = AGM, 2 = LFP, 3 = GEL
 58 - 59   🟢 Battery Capacity         UInt16BE	    2 bytes     1:1                                
-60 - 61   🟢 Pump State               UInt16BE     2 bytes     Boolean     0001 = ON, 0000 = OFF
-62 - 63   🟢 Load State               UInt16BE     2 bytes     Boolean     0001 = ON, 0000 = OFF
+60 - 61   🟢 Load State               UInt16BE     2 bytes     Boolean     0001 = ON, 0000 = OFF
+62 - 63   🟢 Pump State               UInt16BE     2 bytes     Boolean     0001 = ON, 0000 = OFF
 64 - 65   🟢 AC Charger Voltage	      Int16BE       2 bytes    ÷ 100 (V)
 66 - 67   🟢 AC Charger Current	      Int16BE       2 bytes    ÷ 100 (A)   Charging (+), Discharging (-)
 68 - 69   🔴 Fault Code               UInt16       2 bytes                 0000 = OK, Else = Error Code [TBC]
@@ -55,7 +55,7 @@ Bit      Hex      Name      Function
 6        0x40     BULK      1 = Bulk/Absorb Charging Stage
 5        0x20     FLOAT     1 = Float/Maintenance Charging Stage
 3        0x08     INPUT     1 = Active Charging Source Detected (AC/Solar)
-1        0x02     CHG       1 = Current flowing into Battery
+1        0x02     CHG       1 = Charging, 0 = No Charge
 0        0x01     LOAD      1 = Main Load Switch is ON
 
 🧩 System Settings String (325-Byte Frame)
