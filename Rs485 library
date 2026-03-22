@@ -2,29 +2,31 @@ Byte  Status Parameter             Data Type Size Notes / Hypothesis
 0 - 3   🔴 System Header / Status?                4 bytes                Often contains the device ID, operating state (e.g., Bulk, Float, Absorption), or active fault codes.
 4 - 5   🟢 Solar Input Voltage      Int16 (BE)    2 bytes    ÷ 100 (V)
 6 - 7   🟢 Solar Input Current      Int16 (BE)    2 bytes    ÷ 100 (A)
-8 - 9	  🟢 Input Voltage            Int16 (BE)    2 bytes	   ÷ 100 (V)	Vehicle alternator / secondary solar
+8 - 9	  🟢 Start Input Voltage      Int16 (BE)    2 bytes	   ÷ 100 (V)	Vehicle alternator / secondary solar
 12 - 13	🟢 Output Voltage	           Int16 (BE)    2 bytes	 ÷ 100 (V)	Output going to the house system
 14 - 15	🟢 Charge Current	           Int16 (BE)    2 bytes	 ÷ 100 (A)	Current flowing to the battery
 16 - 17 🟢 DC Load Voltage          Int16 (BE)    2 bytes    ÷ 100 (V)
 18 - 19 🟢 DC Load Current          Int16 (BE)    2 bytes    ÷ 100 (A)
 20 - 21 🟢 Battery Voltage          Int16 (BE)    2 bytes    ÷ 100 (V)
 22 - 23 🟢 Battery Current          Int16 (BE)    2 bytes    ÷ 100 (A)  Charging (+), Discharging (-)
-24      🔴 
+24      🔴 Charge Status            UInt8	        ID          1=Bulk, 2=Absorb, 3=Float 4=Storage 5=Equalization
 25      🟢 Battery SOC              UInt8         1 byte      1:1 (%)   Range: 0 to 100.
 26 - 27 🔴 
 28 - 29 🟢 Battery Temp	            Int16 (BE)	  2 bytes	÷ 10 (°C)
 30 - 31 🔴  
 32 - 33 🟢 Screen/Timeout State	    UInt16 (BE)	  State ID		            Syncs with Register  
 34 - 39 🔴
-40 - 41 🟢 Tank 1                  UInt16 (BE)  2 bytes     1:1 (%)     Reads 65535 (0xFFFF) if disconnected.
+40 - 41 🟢 Ext Shunt Current       Int16 (BE)    2 bytes    ÷ 100 (A)
 42 - 43 🟢 Tank 2                  UInt16 (BE)  2 bytes     1:1 (%)     Reads 65535 (0xFFFF) if disconnected.
 44 - 45 🟢 Tank 3                  UInt16 (BE)   2 bytes    1:1 (%)     Reads 65535 (0xFFFF) if disconnected.
 46 - 47 🟢 Main State               UInt16 (BE)  2 bytes    Boolean     0001 = ON, 0000 = OFF
 48 - 49 🟢 Tank 4                  UInt16 (BE)   2 bytes    1:1 (%)     Reads 65535 (0xFFFF) if disconnected. 
-50 - 51 🟢 System Temp	            Int16 (BE)	  2 bytes	÷ 10 (°C)
+50 - 51 🟢 Outside Temp	            Int16 (BE)	  2 bytes	  ÷ 10 (°C)
 52      🟢 Pump Switch              Bitmask      1 byte     Binary      0 = Load, 1 = Pump
-53      🟢 Control Switches         Bitmask      1 byte     Binary      0 = Load, Bit 1 = Pump, Bit 2 = Night Mode.
-54 - 59 🔴
+53      🟢 Control Switches         Bitmask      1 byte     Binary      0 = Load, 1 = Pump, Bit 2 = Night Mode.
+54 - 56 🔴 
+57      🟢 Battery Type             Bitmask      1 byte     Binary      0 = LA, 1 = AGM, 2 = LFP, 3 = GEL
+58 - 59 🟢 Battery Capacity         UInt16BE	   2 bytes     1:1                                
 60 - 61 🟢 Pump State               UInt16 (BE)  2 bytes    Boolean     0001 = ON, 0000 = OFF
 62 - 63 🟢 Load State               UInt16 (BE)  2 bytes    Boolean     0001 = ON, 0000 = OFF
 64 - 65 🟢 AC Charger Voltage	      Int16 (BE)   2 bytes    ÷ 100 (V)
@@ -32,5 +34,6 @@ Byte  Status Parameter             Data Type Size Notes / Hypothesis
 68 - 69 🔴 State                    UInt16 (BE)  2 bytes    Boolean     0001 = ON, 0000 = OFF
 70 - 71 🔴 State                    UInt16 (BE)  2 bytes    Boolean     0001 = ON, 0000 = OFF
 64 - 80 🔴 
-81      🟢 Charge Flag           UInt8         1 byte      
+81      🟢 Master Flag              UInt8         1 byte    Bits	      0x80=Shunt, 0x40=Bulk, 0x20=Float, 0x10 Start Active, 0x08 Solar Active, 0x02 Battery Charging, 0x01 Loads On
 82 - 93 🔴
+100 - 101 🟢 System Temp	            Int16 (BE)	  2 bytes	÷ 10 (°C)
