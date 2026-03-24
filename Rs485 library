@@ -3,13 +3,14 @@ Byte      Status Parameter             Data Type    Size       Scale       Notes
 0 - 3     🔴 System Header / Status?  Header        Hex        N/A         Always B0 03 00 58
 4 - 5     🟢 Solar Input Voltage      Int16 (BE)    2 bytes    ÷100 (V)    Input Voltage from Panels
 6 - 7     🟢 Solar Input Current      Int16 (BE)    2 bytes    ÷100 (A)    Input Current from Panels
-8 - 9	    🟢 Start Input Voltage      Int16 (BE)    2 bytes	   ÷100 (V)     Vehicle Starter Battery Voltage
-12 - 13	  🟢 Output Voltage	           Int16 (BE)    2 bytes	 ÷100 (V)     House Battery Bank Voltage
-14 - 15	  🟢 Charge Current	           Int16 (BE)    2 bytes	 ÷100 (A)     
-16 - 17   🟢 DC Load Voltage          Int16 (BE)    2 bytes    ÷100 (V)
-18 - 19   🟢 DC Load Current          Int16 (BE)    2 bytes    ÷100 (A)
-20 - 21   🟢 Battery Voltage          Int16 (BE)    2 bytes    ÷100 (V)    House Battery Bank Voltage
-22 - 23   🟢 Battery Current          Int16 (BE)    2 bytes    ÷100 (A)    (+) Charging / (-) Discharging
+8 - 9	    🔴 
+10 - 11   🔴
+12 - 13	  🟢 Start Input Voltage      Int16 (BE)    2 bytes	   ÷100 (V)     Vehicle Starter Battery Voltage
+14 - 15	  🟢 Start Input Current	     Int16 (BE)    2 bytes	 ÷100 (A)     
+16 - 17   🟢 House Voltage          Int16 (BE)    2 bytes    ÷100 (V)      House Battery Bank Voltage
+18 - 19   🟢 House Current          Int16 (BE)    2 bytes    ÷100 (A)      (+) Charging / (-) Discharging
+20 - 21   🟢 Load Voltage          Int16 (BE)    2 bytes    ÷100 (V)       Load Battery Bank Voltage
+22 - 23   🟢 Load Current          Int16 (BE)    2 bytes    ÷100 (A)       (+) Charging / (-) Discharging
 24        🔴 Charge Status            UInt8	        ID                     1=Bulk, 2=Absorb, 3=Float 4=Storage 5=Equalization
 25        🟢 Battery SOC              UInt8         1 byte      1:1 (%)    State of Charge (%)
 26 - 27   🔴 
@@ -17,14 +18,14 @@ Byte      Status Parameter             Data Type    Size       Scale       Notes
 30 - 31   🟢 Outside Temp	            Int16 (BE)	  2 bytes	    ÷ 10 (°C)  NTC 1 Sensor (°C)
 32 - 33   🟢 Internal Temp	          Int16 (BE)	  2 bytes	    ÷ 10 (°C)  NTC 1 Sensor (°C)
 34 - 35   🔴
-36        🟢 Source                  	UInt8         1 byte                 00= No External Charging, 01= Solar Input, 02= Vehicle Input, 04	= AC Input
+36        🔴
 37        🔴
 38 - 39   🔴 VSR                                                          00 20 = Active
-40 - 41   🟢 Ext Shunt Current       Int16 (BE)    2 bytes     ÷ 100 (A)
-42 - 43   🟢 Tank 2                  UInt16 (BE)   2 bytes     1:1 (%)     Reads 65535 (0xFFFF) if disconnected.
-44 - 45   🟢 Tank 3                  UInt16 (BE)   2 bytes     1:1 (%)     Reads 65535 (0xFFFF) if disconnected.
-46 - 47   🟢 Main State              UInt16 (BE)  2 bytes     Boolean     0001 = ON, 0000 = OFF
-48 - 49   🟢 Tank 4                  UInt16 (BE)   2 bytes     1:1 (%)     Reads 65535 (0xFFFF) if disconnected. 
+40 - 41   🟢 Tank 1                  UInt16 (BE)   2 bytes     1:1 (%)     FFFF- disconnected, 0000- Empty
+42 - 43   🟢 Tank 2                  UInt16 (BE)   2 bytes     1:1 (%)     FFFF- disconnected, 0000- Empty
+44 - 45   🟢 Tank 3                  UInt16 (BE)   2 bytes     1:1 (%)     FFFF- disconnected, 0000- Empty
+46 - 47   🟢 Tank 4                  UInt16 (BE)   2 bytes     1:1 (%)     FFFF- disconnected, 0000- Empty
+48 - 49   🔴 
 52 - 53   🟢 AC Charger Current      Int16BE       2 bytes     ÷ 100
 52 - 53   🟢 AC Charger Current      Int16BE       2 bytes     ÷ 100
 54 - 56   🔴 AC Input Watts          	Int16BE       2 bytes                Calculated AC Power [TBC]
